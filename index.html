@@ -1,46 +1,181 @@
 <!DOCTYPE HTML PUBLIC>
 
-<script src="js/ossicle.js"></script>
+<script src="js/vendor/showdown.js"></script>
+<script src="js/vendor/underscore-min.js"></script>
+<script src="js/vendor/backbone-min.js"></script>
+<script src="js/vendor/zepto.min.js"></script>
+<script src="js/vendor/github.js"></script>
 
+    <link href="js/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <link href="style.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="js/prettify/prettify.js"></script>
 
 <script>
 
-    var Document = Ossicle.Model.extend({
-        remarks : "Blabla ....",
-        initialize : function(key, title) {
-            if(key) this.key = key;
-            if(title) this.title = title;
+(function($) {
+
+    var converter = new Showdown.converter();
+
+    function washCode(data) {
+        /*TODO : a better regex*/
+
+        data = data.replace(/```html/g,"");
+        data = data.replace(/``` html/g,"");
+        data = data.replace(/~~~html/g,"");
+        data = data.replace(/~~~ html/g,"");
+
+        data = data.replace(/```js/g,"");
+        data = data.replace(/``` js/g,"");
+        data = data.replace(/~~~js/g,"");
+        data = data.replace(/~~~ js/g,"");
+
+        data = data.replace(/```java/g,"");
+        data = data.replace(/``` java/g,"");
+        data = data.replace(/~~~java/g,"");
+        data = data.replace(/~~~ java/g,"");
+
+        data = data.replace(/```rb/g,"");
+        data = data.replace(/``` rb/g,"");
+        data = data.replace(/~~~rb/g,"");
+        data = data.replace(/~~~ rb/g,"");
+
+        data = data.replace(/```/g,"");
+        data = data.replace(/~~~/g,"");
+
+        return data;
+    }
+
+
+
+    window.Chapter = Backbone.Model.extend({
+
+        /* override */
+        fetch : function(callbk) {
+            var that = this;
+            gh.object(this.get('user'),this.get('repo'))
+                    .blob(that.get('url'),that.get('branch'),function(data){
+                    //console.log("***", data.blob, data.blob.data);
+                    that.set({'mdText': data.blob.data});
+                    callbk();
+
+            });
+        },
+
+        toHTML : function() {
+
+            var html = converter.makeHtml(washCode(this.get('mdText')));
+            html = html.replace(/<code>/g,'<code class="prettyprint">');
+            return html;
+            //document.body.innerHTML += html;
+            //prettyPrint();
+        }
+
+    });
+
+    window.Chapters = Backbone.Collection.extend({
+        model : Chapter
+    });
+
+    window.Branch = Backbone.Model.extend({
+
+        /* override */
+        fetch : function(callbk) {
+            this.chapters = new Chapters();
+            var that = this;
+
+            gh.object(this.get('user'),this.get('repo')).blobAll(this.get('id'), function(data){
+                var m;
+                console.log('DATA: ',data);
+                for(m in data.blobs){
+                    //that.blobs.push([m,data.blobs[m]]);
+                    //console.log(data.blobs[m],m, m.split('.md'));
+                    if(m.split('.md').length > 1) {
+                        console.log(data.blobs[m],m, m.split('.md'));
+                        var chapter = new Chapter({
+                            id : data.blobs[m], url : m,
+                            repo: that.get('repo'), user:that.get('user'),
+                            branch : that.get('id'),
+                            mdText : ""
+                        });
+                        that.chapters.add(chapter);
+                    }
+                }
+                callbk();
+            });
         }
     });
 
-    var Documents = Ossicle.Models.extend({
-        model : Document,
-        initialize: function(items) {
-            if(items) this.items = items;
+    window.Branches = Backbone.Collection.extend({
+        model : Branch,
+        initialize: function(args) {
+            this.repo = args.repo;
+            this.user = args.user;
+            if(args.items) this.items = items;
+
+            this.model.repo = args.repo;
+            this.model.user = args.user;
+
+        },
+        /* override */
+        fetch : function(callbk) {
+            var that = this;
+            gh.repo(this.user,this.repo).branches(function(data){
+                //var m;
+                console.log(data.branches);
+                for(var m in data.branches){
+                    //var name = m;
+                    console.log(m);
+                    that.add(new Branch({
+                        id : data.branches[m], name :m,
+                        repo: that.model.repo, user:that.model.user,
+
+                        chapters : new Chapters({repo:that.model.repo, user:that.model.user})
+                    })); /* sha, name*/
+                    //that.add(branch);
+                }
+                callbk();
+            });
+        },
+
+        getByName : function(name) {
+            return this.filter(function(branch) { return branch.get('name') === name; })[0];
         }
 
     });
 
 
-    var doc1 = Document.getInstance('001','TITLE 1');
-    var doc2 = Document.getInstance('002','TITLE 2');
-    var doc3 = Document.getInstance('003','TITLE 3');
-    var doc4 = Document.getInstance('004','TITLE 4');
-    var doc5 = Document.getInstance('005','TITLE 5');
-    //console.log(doc1,doc1.title,doc1.key);
+})(Zepto);
 
-    var docs = Documents.getInstance([doc1, doc2, doc3, doc4 ,doc5]);
 
-    console.log('EACH : ');
-    docs.each(function(item){console.log(JSON.stringify(item))});
+    var branches = new Branches({ user : '3monkeys', repo : 'play.rules' });
+    console.log(branches);
+    /* load branches */
+    branches.fetch(function(){
+        branches.each(function(branch) { console.log(branch, branch.get('id'), branch.get('name')); });
+        console.log('search master : ', branches.getByName('master'), branches.getByName('master').get('name'));
 
-    docs.get('002').title = 'MY TITLE';
-    docs.get('004').title = 'MY TITLE';
+        branches.getByName('master').fetch(function(){
+            console.log('TERMINATED', branches.getByName('master').chapters);
 
-    console.log('FILTER : ', docs.filter(function(item){ return item.title == 'MY TITLE'}));
+            //TODO : sort chapters of master
 
-    docs.remove(docs.get('003'), function(item) { console.log('DELETE : ', item);});
-    console.log('EACH AFTER DELETE : ');
-    docs.each(function(item){console.log(JSON.stringify(item))});
+            branches.getByName('master').chapters.each(function(chapter) {
+                console.log(chapter.get('url'), chapter.get('user'), chapter.get('repo'));
+
+                chapter.fetch(function(){
+                    console.log(chapter.get('url'), chapter.toHTML());
+                    document.body.innerHTML += '<HR><h2 style="background: #000000; color: #f5f5f5;">' + chapter.get('url') + '</h2><HR>' + chapter.toHTML();
+                    prettyPrint();
+                });
+            });
+
+
+        });
+    });
+
+
+
+
+
 
 </script>
