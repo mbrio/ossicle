@@ -3,8 +3,6 @@
 body {
   	max-width: 900px;
 
-  	margin-left: 10% ;
-    margin-right: 10%;
   	color: #4a4a4a;
 	font-family: arial, serif;
 }
@@ -15,13 +13,6 @@ blockquote{
   font-size: 90%;
   line-height: 130%;
 }
-
-/*
-*{
-   font-family: arial, serif;
-}
-
-*/
 
 p{
   text-align: justify;
@@ -36,10 +27,6 @@ h2{
   
 }
 
-
-
-
-
 h2, h3{
   padding:20px 0 0 0;
  
@@ -50,29 +37,11 @@ h3{
    margin-bottom: 5px;
 }
 
-/*
-code{
-	font-family: monospace, sans-serif;
-    background: #F0F0F0;
-}
-
-pre code{
-	display:block;
-	padding:.5em;
-}
-
-pre{
-	font-size:15px;
-	
-}*/
-
-
 
 pre {
     font-family: Monaco, "Courier New", monospace;
     border: 1px solid #ddd;
     background-color: #F8F8F8;
-    /*border-left: 3px solid #BBB;*/
     padding: 0 .4em;
       margin: 15px;
 }
@@ -80,9 +49,7 @@ pre {
 
 code {
     font-family: Monaco, "Courier New", monospace;
-    /*border: 1px solid #ddd;*/
     background-color: #F8F8F8;
-    /*border-left: 4px solid #BBB;*/
     font-size: 85%;
     padding: 0 .2em;
 }
