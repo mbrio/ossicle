@@ -77,10 +77,10 @@
     });
 
     $(function() {
-        /*--- initialisation de la webapp ---*/
-        window.blablabla = new Workspace();
+        /*--- webapp init ---*/
+        window.myApp = new Workspace();
 
-        /*--- activation du monitoring des "hashchange events" et dispatch des routes ---*/
+        /*--- activate "hashchange events" monitoring and routes dispatch ---*/
         Backbone.history.start();
     });
 
