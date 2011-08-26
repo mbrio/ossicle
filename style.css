@@ -50,6 +50,7 @@ h3{
    margin-bottom: 5px;
 }
 
+/*
 code{
 	font-family: monospace, sans-serif;
     background: #F0F0F0;
@@ -63,6 +64,27 @@ pre code{
 pre{
 	font-size:15px;
 	
+}*/
+
+
+
+pre {
+    font-family: Monaco, "Courier New", monospace;
+    border: 1px solid #ddd;
+    background-color: #F8F8F8;
+    /*border-left: 3px solid #BBB;*/
+    padding: 0 .4em;
+      margin: 15px;
+}
+
+
+code {
+    font-family: Monaco, "Courier New", monospace;
+    /*border: 1px solid #ddd;*/
+    background-color: #F8F8F8;
+    /*border-left: 4px solid #BBB;*/
+    font-size: 85%;
+    padding: 0 .2em;
 }
 
 

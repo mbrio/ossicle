@@ -1,0 +1,52 @@
+body {
+    background-color: #F0F1EB;
+    font: 20px 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif;
+    color: #555;
+    font-size: 100%;
+    /*margin-left: 5%;
+    margin-right: 5%;*/
+}
+
+.title {
+    color : #ff6600;
+    font-weight: bold;
+    font-size: 200%;
+    font-family: "Arial black",Arial, Helvetica, Sans-Serif;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+a {
+  color: #ff6600;
+  font-weight: bold;
+}
+
+a:visited {
+  color: #ff6600;
+  font-weight: normal;
+}
+
+hr {
+    border: 1px;
+    border-color: #cccccc;
+    border-style: dashed;
+}
+
+pre {
+    font-family: Monaco, "Courier New", monospace;
+    border: 1px solid #ddd;
+    background-color: #F8F8F8;
+    /*border-left: 3px solid #BBB;*/
+    padding: 0 .4em;
+      margin: 15px;
+}
+
+
+code {
+    font-family: Monaco, "Courier New", monospace;
+    /*border: 1px solid #ddd;*/
+    background-color: #F8F8F8;
+    /*border-left: 4px solid #BBB;*/
+    font-size: 85%;
+    padding: 0 .2em;
+}

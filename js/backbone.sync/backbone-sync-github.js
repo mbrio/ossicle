@@ -1,3 +1,7 @@
+/**
+ * User: k33g
+ * Date: 26/08/11
+ */
 
 var Store = function(user,repo,branch,directory, callBk) {
     var that = this;
@@ -41,9 +45,6 @@ _.extend(Store.prototype, {
 
                         var lastCommit = inf.commits[0];
                         var firstCommit = inf.commits[inf.commits.length-1];
-
-                        //TODO:Extraire le titre du post
-                        //TODO: success, error, ...
 
                         model.set({author : lastCommit.author.login});
                         model.set({dateCreate : firstCommit.committed_date});

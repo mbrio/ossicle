@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC>
+<html>
+<body>
+
+
+</body>
+
+<script src="js/vendor/underscore-min.js"></script>
+<script src="js/vendor/backbone-min.js"></script>
+<script src="js/backbone.sync/backbone-sync-localstorage.js"></script>
+<script src="js/vendor/zepto.min.js"></script>
+
+
+<script>
+
+
+(function($) {
+
+    window.Doc = Backbone.Model.extend({
+        storeName : "docsDB"
+    });
+
+
+    window.Docs = Backbone.Collection.extend({
+        model : Doc,
+        storeName : "docsDB"
+    });
+
+    window.Human =  Backbone.Model.extend({
+        storeName : "humansDB"
+    });
+
+    window.Humans =  Backbone.Collection.extend({
+        model : Human,
+        storeName : "humansDB"
+    });
+
+    var doc1, doc2, doc3, doc4, h1, h2, h3;
+
+    doc1 = new Doc({id:'001', title:'TITLE 1', text:'TEXT1'});
+    doc2 = new Doc({id:'002', title:'TITLE 2', text:'TEXT2'});
+    doc3 = new Doc({id:'003', title:'TITLE 3', text:'TEXT3'});
+    doc4 = new Doc({id:'004', title:'TITLE 4', text:'TEXT4'});
+
+    h1 = new Human({id:'001', name:'Human 1'});
+    h2 = new Human({id:'002', name:'Human 2'});
+    h3 = new Human({id:'003', name:'Human 3'});
+
+    doc1.save();
+    doc2.save();
+    doc3.save();
+    doc4.save();
+
+    h1.save();
+    h2.save();
+    h3.save();
+
+    var docs = new Docs();
+    var humans = new Humans();
+
+    docs.fetch();
+    humans.fetch();
+    
+    console.log(docs);
+    console.log(humans);
+
+})(Zepto);
+
+
+
+
+
+
+</script>
+</html>
